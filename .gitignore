@@ -1,2 +1,5 @@
 /node_modules
+/files
 .env
+package-lock.json
+nohup.out
