@@ -16,9 +16,9 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 
 // Старт бота
 bot.start((ctx) => ctx.reply(`Привет ${ctx.message.from.first_name ? ctx.message.from.first_name : "незнакомец"}`+CONST.START_MSG, Markup.keyboard([
-  ["❓ Об авторе"], 
-  ["💰 Поддержать"], 
-  ["✍️ Обратная связь"]
+  ["Пройти тест"], 
+  ["Задать вопрос ❓"], 
+  ["✍️ Обратная связь | Контакты"]
 ]).resize()))
 
 // Помощь
@@ -36,12 +36,12 @@ bot.help(async (ctx) => {
 })
 
 // Кнопка "Об авторе"
-bot.hears('❓ Об авторе', async (ctx) => {
+bot.hears('Пройти тест', async (ctx) => {
   try {
     await ctx.replyWithPhoto({
-      source: 'img/portrait.jpg'
+      source: 'img/Test.jpg'
     }, {
-      caption: CONST.AUTHOR,
+      caption: CONST.TEST,
       parse_mode: "HTML",
       reply_markup: JSON.stringify({"inline_keyboard": [
         [
