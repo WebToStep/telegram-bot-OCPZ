@@ -17,8 +17,8 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 // Старт бота
 bot.start((ctx) => ctx.reply(`Привет ${ctx.message.from.first_name ? ctx.message.from.first_name : "незнакомец"}`+CONST.START_MSG, Markup.keyboard([
   ["Пройти тест"], 
-  ["Задать вопрос ❓"], 
-  ["✍️ Обратная связь | Контакты"]
+  ["💰 Поддержать"], 
+  ["Задать вопрос❓"]
 ]).resize()))
 
 // Помощь
@@ -26,8 +26,8 @@ bot.help(async (ctx) => {
   try {
     await ctx.replyWithHTML(CONST.COMMANDS, Markup.inlineKeyboard(
       [
-        Markup.button.url('Обзор бота', 'https://youtu.be/IZj7up7CDdU'),
-        Markup.button.url('Как создать бота', 'https://youtu.be/YxHWfDdjIek'),
+        Markup.button.url('Контакты компании', 'https://ocpzaktobe.kz/contacts/'),
+        Markup.button.url('Как проехать?', 'https://yandex.kz/maps/?from=api-maps&ll=57.058897%2C50.285228&mode=usermaps&origin=jsapi_2_1_79&um=constructor%3Abc11e699de39ad065751b6865b640125136187e5915df020e16afe47269c5f3e&z=15'),
       ]
     ))
   } catch (e) {
@@ -35,7 +35,7 @@ bot.help(async (ctx) => {
   }
 })
 
-// Кнопка "Об авторе"
+// Кнопка "Пройти тест"
 bot.hears('Пройти тест', async (ctx) => {
   try {
     await ctx.replyWithPhoto({
@@ -45,9 +45,9 @@ bot.hears('Пройти тест', async (ctx) => {
       parse_mode: "HTML",
       reply_markup: JSON.stringify({"inline_keyboard": [
         [
-          Markup.button.url('YouTube', 'https://www.youtube.com/c/ITDoctor/about'),
-          Markup.button.url('Udemy', 'https://www.udemy.com/user/useinov-ismail-asanovich/'),
-          Markup.button.url('GitHub', 'https://github.com/morphIsmail')
+          Markup.button.url('Новости', 'https://ocpzaktobe.kz/category/news/'),
+          Markup.button.url('Статьи', 'https://ocpzaktobe.kz/category/zozh/'),
+          Markup.button.url('Услуги', 'https://ocpzaktobe.kz/uslugi/')
         ]
       ]})
     }, {
@@ -62,8 +62,7 @@ bot.hears('💰 Поддержать', async (ctx) => {
   try {
     await ctx.reply(CONST.DONATION, Markup.inlineKeyboard(
       [
-        Markup.button.url('YooMoney', 'https://sobe.ru/na/itdoctor'),
-        Markup.button.url('PayPal', 'https://paypal.me/itdoctorstudio')
+        Markup.button.url('Ссылка на любую платежную систему', 'https://kaspi.kz'),
       ]
     ))
   } catch (e) {
@@ -71,10 +70,10 @@ bot.hears('💰 Поддержать', async (ctx) => {
   }
 })
 // Кнопка "Обратная связь"
-bot.hears('✍️ Обратная связь', async (ctx) => {
+bot.hears('Задать вопрос❓', async (ctx) => {
   try {
-    await ctx.reply('🤔 Чтобы связаться с моим создателем, автором канала ITDoctor, перейди в группу канала нажав на кнопку ниже.', Markup.inlineKeyboard(
-      [Markup.button.url('Написать письмо', 'https://t.me/itdoctorstudio')]))
+    await ctx.reply('🤔 Скоро вы сможете задать здесь свой вопрос', Markup.inlineKeyboard(
+      [Markup.button.url('Задать вопрос на сайте', 'https://ocpzaktobe.kz/zadat-vopros/')]))
   } catch (e) {
     console.error(e)
   }
@@ -111,8 +110,8 @@ function send_msg_action(id, src, text, keyboard=[[]], preview=false) {
   })
 }
 
-// Команда /free_course - Бесплатные курсы
-bot.command('free_course', async (ctx) => {
+// Команда //website - Бесплатные курсы
+bot.command('/website', async (ctx) => {
   try {
     await ctx.replyWithHTML('<b>Бесплатные курсы на <a href="https://www.youtube.com/c/ITDoctor/playlists">YouTube</a></b>', Markup.inlineKeyboard([
       [Markup.button.callback('Редакторы кода', 'btn_category1')],
