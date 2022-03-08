@@ -16,18 +16,21 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 
 // Старт бота
 bot.start((ctx) => ctx.reply(`Привет ${ctx.message.from.first_name ? ctx.message.from.first_name : "незнакомец"}`+CONST.START_MSG, Markup.keyboard([
-  ["Пройти тест"], 
-  ["💰 Поддержать"], 
+  ["Психологический тест"], 
+  ["Контакты"], 
   ["Задать вопрос❓"]
 ]).resize()))
-
+bot.command('location', (ctx) => ctx.sendLocation(ctx.message.message_id, '11.120310', '76.119350'));
+          bot.command('location', (ctx) => ctx.sendLocation(ctx.message.message_id, ['11.120310', '76.119350']));
+          bot.command('location', (ctx) => ctx.sendLocation(['11.120310', '76.119350']));
+          bot.command('location', (ctx) => ctx.sendLocation('11.120310', '76.119350'));
 // Помощь
 bot.help(async (ctx) => {
   try {
     await ctx.replyWithHTML(CONST.COMMANDS, Markup.inlineKeyboard(
       [
         Markup.button.url('Контакты компании', 'https://ocpzaktobe.kz/contacts/'),
-        Markup.button.url('Как проехать?', 'https://yandex.kz/maps/?from=api-maps&ll=57.058897%2C50.285228&mode=usermaps&origin=jsapi_2_1_79&um=constructor%3Abc11e699de39ad065751b6865b640125136187e5915df020e16afe47269c5f3e&z=15'),
+        Markup.button.callback('Как проехать?', 'btn_map'),
       ]
     ))
   } catch (e) {
@@ -36,7 +39,7 @@ bot.help(async (ctx) => {
 })
 
 // Кнопка "Пройти тест"
-bot.hears('Пройти тест', async (ctx) => {
+bot.hears('Психологический тест', async (ctx) => {
   try {
     await ctx.replyWithPhoto({
       source: 'img/Test.jpg'
@@ -57,14 +60,24 @@ bot.hears('Пройти тест', async (ctx) => {
     console.error(e)
   }
 })
-// Кнопка "Поддержать"
-bot.hears('💰 Поддержать', async (ctx) => {
+// Кнопка "Контакты"
+bot.hears('Контакты', async (ctx) => {
   try {
-    await ctx.reply(CONST.DONATION, Markup.inlineKeyboard(
-      [
-        Markup.button.url('Ссылка на любую платежную систему', 'https://kaspi.kz'),
-      ]
-    ))
+    await ctx.replyWithHTML(`
+<b>Адрес: Актюбинская область,
+г. Актобе, жилой массив Жанаконыс, здание 4Б, 
+почтовый индекс 030017 </b>
+`, Markup.inlineKeyboard([
+      [Markup.button.callback('Как проехать?', 'btn_map')],
+      [Markup.button.url('Показать адрес на сайте', 'https://ocpzaktobe.kz/contacts/')],
+    ]))
+    // await ctx.reply(CONST.DONATION, Markup.inlineKeyboard(
+    //   [
+    //     Markup.button.url('Ссылка на любую платежную систему', 'https://kaspi.kz'),
+    //     Markup.button.url('xxx', 'https://kaspi.kz'),
+    //   ]
+    // ))
+
   } catch (e) {
     console.error(e)
   }
@@ -79,6 +92,19 @@ bot.hears('Задать вопрос❓', async (ctx) => {
   }
 })
 
+
+// обработка кнопки проехать \ карта
+bot.action('btn_map', async (ctx) => {
+  try {
+    // вывод карты
+    await ctx.answerCbQuery()
+    await ctx.replyWithHTML(`<b>Нажмите на карту:
+    для того чтобы проложить маршрут📍
+    или посмотреть адрес🌍</b>`)
+    await ctx.replyWithLocation('50.287692', '57.057018)') 
+
+  } catch (e) {console.log(e)}
+})
 /**
  * Функция для отправки сообщения при нажатии по кнопке или выполнении команды
  * @param {String} id Идентификатор кнопки для обработки
@@ -113,6 +139,7 @@ function send_msg_action(id, src, text, keyboard=[[]], preview=false) {
 // Команда //website - Бесплатные курсы
 bot.command('/website', async (ctx) => {
   try {
+    // await bot.sendLocation(msg.chat.id, 50.287692, 57.057018)
     await ctx.replyWithHTML('<b>Бесплатные курсы на <a href="https://www.youtube.com/c/ITDoctor/playlists">YouTube</a></b>', Markup.inlineKeyboard([
       [Markup.button.callback('Редакторы кода', 'btn_category1')],
       [Markup.button.callback('Инструменты веб-разработчика', 'btn_category2')],
@@ -137,10 +164,6 @@ bot.action('btn_category1', async (ctx) => {
       [
         Markup.button.callback('1. Обзоры', 'category1_btn1'),
         Markup.button.callback('2. VS Code', 'category1_btn2')
-      ],
-      [
-        Markup.button.callback('3. Sublime Text 3', 'category1_btn3'),
-        Markup.button.callback('4. Brackets', 'category1_btn4')
       ]
     ]))
   } catch (e) {
