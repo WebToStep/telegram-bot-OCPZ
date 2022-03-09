@@ -19,10 +19,7 @@ bot.start((ctx) => ctx.reply(`Привет ${ctx.message.from.first_name ? ctx.m
   ["Контакты"], 
   ["Задать вопрос❓"]
 ]).resize()))
-bot.command('location', (ctx) => ctx.sendLocation(ctx.message.message_id, '11.120310', '76.119350'));
-          bot.command('location', (ctx) => ctx.sendLocation(ctx.message.message_id, ['11.120310', '76.119350']));
-          bot.command('location', (ctx) => ctx.sendLocation(['11.120310', '76.119350']));
-          bot.command('location', (ctx) => ctx.sendLocation('11.120310', '76.119350'));
+
 // Помощь
 bot.help(async (ctx) => {
   try {
@@ -164,7 +161,6 @@ send_msg_action('category1_btn2', 'img/texts/c1_b2.jpg', texts[0][1], [[Markup.b
 bot.command('/master', async (ctx) => {
   try {
     await ctx.replyWithPhoto({ source: './img/autor.jpg' });
-
     await ctx.replyWithHTML(`
     <b>Автор бота Мухамеджанов Хасан
     сотрудник ОЦПЗ Актобе и основатель 
@@ -172,8 +168,6 @@ bot.command('/master', async (ctx) => {
     `, Markup.inlineKeyboard([
       [Markup.button.url('На сайт разработчика', 'webstep.kz')]
     ]))
-    
-
   } catch (e) {
     console.error(e)
   }
