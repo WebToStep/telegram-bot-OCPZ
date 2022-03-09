@@ -1,22 +1,21 @@
 // Подключение dotenv для скрытия токена
 require('dotenv').config()
 // Телеграф для создания бота
-const {
-  Telegraf,
-  Markup
-} = require('telegraf')
+const { Telegraf, Markup} = require('telegraf')
 // Подключить текстовые константы
 const CONST = require('./modules/const')
 // Подключить текст для бесплатных курсов
 const texts = require('./modules/texts')
+// подключаем вспомогательные функции
+const debug = require('./modules/helpers')
 
-// Передать токен
+// Создаем экземпляр обьекта и передаем токен
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
 // Старт бота
 bot.start((ctx) => ctx.reply(`Привет ${ctx.message.from.first_name ? ctx.message.from.first_name : "незнакомец"}`+CONST.START_MSG, Markup.keyboard([
   ["Психологический тест"], 
-  ["Контакты"], 
+  ["Контакты"],
   ["Задать вопрос❓"]
 ]).resize()))
 
@@ -72,6 +71,7 @@ bot.hears('Контакты', async (ctx) => {
     console.error(e)
   }
 })
+
 // Кнопка "Обратная связь"
 bot.hears('Задать вопрос❓', async (ctx) => {
   try {
@@ -81,7 +81,18 @@ bot.hears('Задать вопрос❓', async (ctx) => {
     console.error(e)
   }
 })
-
+// ответ бота на сообщение
+bot.on("message", (ctx) => {
+  // ctx.message.chat.id превращяем в id (композиция)
+  const {id, first_name} = ctx.chat
+  // bot.telegram.sendMessage(id, ctx.from.first_name)
+  // console.log(ctx.message.text);
+  if (ctx.message.text.toLowerCase() === 'hello') {
+    bot.telegram.sendMessage(id, `Hello, ${first_name}`)
+  } else {
+    bot.telegram.sendMessage(id, debug(ctx.message))
+  }
+  });
 
 // обработка кнопки проехать \ карта
 bot.action('btn_map', async (ctx) => {
@@ -89,13 +100,14 @@ bot.action('btn_map', async (ctx) => {
     // вывод карты
     await ctx.answerCbQuery()
     await ctx.replyWithHTML(`
-    <b>Нажмите на карту:
+    <b>👇Нажмите на карту:
     для того чтобы проложить маршрут📍
     или посмотреть адрес🌍</b>`)
     await ctx.replyWithLocation('50.287692', '57.057018)') 
 
   } catch (e) {console.log(e)}
 })
+
 /**
  * Функция для отправки сообщения при нажатии по кнопке или выполнении команды
  * @param {String} id Идентификатор кнопки для обработки
@@ -103,7 +115,7 @@ bot.action('btn_map', async (ctx) => {
  * @param {String} text Текстовое сообщение для отправки
  * @param {Boolean} preview Блокировать превью у ссылок или нет, true - блокировать, false - нет
  */
-function send_msg_action(id, src, text, keyboard=[[]], preview=false) {
+ function send_msg_action(id, src, text, keyboard=[[]], preview=false) {
   bot.action(id, async (ctx) => {
     try {
       await ctx.answerCbQuery()
